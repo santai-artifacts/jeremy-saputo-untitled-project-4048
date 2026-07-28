@@ -207,6 +207,7 @@
                 this.bird.velocity = 0;
                 this.pipes = [];
                 this.score = 0;
+                document.getElementById('score').textContent = `Score: ${this.score}`;
                 document.getElementById('gameOverScreen').classList.remove('show');
                 document.getElementById('startScreen').classList.remove('hide');
             },
