@@ -105,11 +105,11 @@
 
         .rainbow-arc {
             position: absolute;
-            top: 60px;
+            top: 40px;
             left: 50%;
             transform: translateX(-50%);
-            width: 300px;
-            height: 150px;
+            width: 400px;
+            height: 180px;
             pointer-events: none;
         }
 
@@ -182,7 +182,7 @@
         </div>
 
         <div class="game-over-screen" id="gameOverScreen">
-            <canvas class="rainbow-arc" id="rainbowCanvas" width="300" height="150"></canvas>
+            <canvas class="rainbow-arc" id="rainbowCanvas" width="400" height="180"></canvas>
             <h1>Game Over!</h1>
             <div class="final-score" id="finalScore">Score: 0</div>
             <button onclick="game.restart()">Play Again</button>
@@ -424,9 +424,30 @@
                     rainbowCtx.strokeStyle = colors[i];
                     rainbowCtx.lineWidth = 12;
                     rainbowCtx.beginPath();
-                    rainbowCtx.arc(centerX, centerY, 100 - i * 12, Math.PI, 0, false);
+                    rainbowCtx.arc(centerX, centerY, 140 - i * 12, Math.PI, 0, false);
                     rainbowCtx.stroke();
                 }
+
+                // Left cloud
+                this.drawCloudOnCanvas(rainbowCtx, 30, 140, 30);
+                // Right cloud
+                this.drawCloudOnCanvas(rainbowCtx, 370, 140, 30);
+            },
+
+            drawCloudOnCanvas(ctx, x, y, size) {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(x + size * 0.6, y - size * 0.3, size * 0.8, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(x + size * 1.2, y, size * 0.7, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(x + size * 0.3, y + size * 0.4, size * 0.6, 0, Math.PI * 2);
+                ctx.fill();
             }
         };
 
