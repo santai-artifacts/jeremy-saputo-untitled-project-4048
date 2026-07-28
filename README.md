@@ -1,1 +1,1 @@
-This is Flappy Bird!
+This is Flappy Bird! :)
