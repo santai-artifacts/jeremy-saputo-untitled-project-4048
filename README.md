@@ -1,2 +1,1 @@
-This is Flappy Bird! :)
-Right?
+A Flappy Bird game
