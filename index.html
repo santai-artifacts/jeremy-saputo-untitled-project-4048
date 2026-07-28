@@ -321,10 +321,30 @@
                     ctx.fillRect(pipe.x - 4, pipe.topHeight + this.pipeGap, this.pipeWidth + 8, 8);
                 }
 
-                // Draw bird
+                // Draw bird body
                 ctx.fillStyle = this.bird.color;
                 ctx.beginPath();
                 ctx.arc(this.bird.x, this.bird.y, this.bird.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Bird wings
+                ctx.fillStyle = '#FFC700';
+                // Left wing
+                ctx.beginPath();
+                ctx.ellipse(this.bird.x - 8, this.bird.y, 6, 10, -0.3, 0, Math.PI * 2);
+                ctx.fill();
+                // Right wing
+                ctx.beginPath();
+                ctx.ellipse(this.bird.x + 8, this.bird.y, 6, 10, 0.3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Bird beak
+                ctx.fillStyle = '#FF6B35';
+                ctx.beginPath();
+                ctx.moveTo(this.bird.x + 12, this.bird.y - 2);
+                ctx.lineTo(this.bird.x + 20, this.bird.y);
+                ctx.lineTo(this.bird.x + 12, this.bird.y + 2);
+                ctx.closePath();
                 ctx.fill();
 
                 // Bird eye
