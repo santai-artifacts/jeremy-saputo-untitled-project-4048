@@ -1,3 +1,1 @@
-# Untitled Project
-
-A Santai codebase.
+This is Flappy Bird!
