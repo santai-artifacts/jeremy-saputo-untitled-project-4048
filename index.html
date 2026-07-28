@@ -78,8 +78,6 @@
             color: white;
             font-size: 48px;
             text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
-            position: relative;
-            z-index: 25;
         }
 
         .game-over-screen .final-score {
@@ -110,11 +108,9 @@
             top: 40px;
             left: 50%;
             transform: translateX(-50%);
-            width: 500px;
+            width: 400px;
             height: 180px;
             pointer-events: none;
-            background: transparent !important;
-            border: none;
         }
 
         .start-screen {
@@ -151,28 +147,20 @@
         }
 
         .start-screen button {
-            padding: 18px 50px;
-            font-size: 22px;
-            font-weight: bold;
+            padding: 15px 40px;
+            font-size: 20px;
             background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
             color: #333;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.2s, box-shadow 0.2s;
             pointer-events: all;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.5);
-            letter-spacing: 0.5px;
         }
 
         .start-screen button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.5);
-        }
-
-        .start-screen button:active {
-            transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
@@ -187,13 +175,14 @@
         <div class="start-screen" id="startScreen">
             <h1>Flappy Bird</h1>
             <div class="instructions">
-                <p>Click to jump. Avoid the pipes!</p>
+                <p>Click or tap to make the bird jump</p>
+                <p>Avoid the pipes and fly as far as you can!</p>
             </div>
             <button onclick="game.start()">Start Game</button>
         </div>
 
         <div class="game-over-screen" id="gameOverScreen">
-            <canvas class="rainbow-arc" id="rainbowCanvas" width="500" height="180"></canvas>
+            <canvas class="rainbow-arc" id="rainbowCanvas" width="400" height="180"></canvas>
             <h1>Game Over!</h1>
             <div class="final-score" id="finalScore">Score: 0</div>
             <button onclick="game.restart()">Play Again</button>
