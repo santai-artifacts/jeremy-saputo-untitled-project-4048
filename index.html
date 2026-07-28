@@ -223,6 +223,8 @@
             pipeWidth: 60,
             pipeSpeed: 5,
             spawnDistance: 200,
+            rainbowAnimationId: null,
+            rainbowAnimationStart: 0,
 
             init() {
                 this.bird.y = 300;
@@ -232,6 +234,7 @@
                 document.getElementById('score').textContent = `Score: ${this.score}`;
                 document.getElementById('gameOverScreen').classList.remove('show');
                 document.getElementById('startScreen').classList.remove('hide');
+                this.stopRainbowAnimation();
             },
 
             start() {
@@ -419,10 +422,11 @@
                 this.gameActive = false;
                 document.getElementById('gameOverScreen').classList.add('show');
                 document.getElementById('finalScore').textContent = `Score: ${this.score}`;
-                this.drawRainbow();
+                this.rainbowAnimationStart = Date.now();
+                this.animateRainbow();
             },
 
-            drawRainbow() {
+            drawRainbow(animationTime = 0) {
                 const rainbowCanvas = document.getElementById('rainbowCanvas');
                 const rainbowCtx = rainbowCanvas.getContext('2d');
                 rainbowCtx.clearRect(0, 0, rainbowCanvas.width, rainbowCanvas.height);
@@ -439,15 +443,35 @@
                     rainbowCtx.stroke();
                 }
 
+                // Animate clouds with gentle floating motion
+                const wave = Math.sin(animationTime / 1000) * 8;
+                const verticalBob = Math.cos(animationTime / 800) * 4;
+
                 // Left cloud
-                this.drawCloudOnCanvas(rainbowCtx, 30, 140, 30);
+                this.drawCloudOnCanvas(rainbowCtx, 30 + wave, 140 + verticalBob, 30);
                 // Right cloud
-                this.drawCloudOnCanvas(rainbowCtx, 470, 140, 30);
-                // Additional clouds
-                this.drawCloudOnCanvas(rainbowCtx, 80, 40, 22);
-                this.drawCloudOnCanvas(rainbowCtx, 420, 50, 20);
-                this.drawCloudOnCanvas(rainbowCtx, 150, 20, 18);
-                this.drawCloudOnCanvas(rainbowCtx, 350, 30, 19);
+                this.drawCloudOnCanvas(rainbowCtx, 470 - wave, 140 + verticalBob, 30);
+                // Additional clouds with different animation speeds
+                this.drawCloudOnCanvas(rainbowCtx, 80 + Math.sin(animationTime / 1500) * 6, 40 + Math.cos(animationTime / 1200) * 3, 22);
+                this.drawCloudOnCanvas(rainbowCtx, 420 - Math.sin(animationTime / 1400) * 6, 50 + Math.sin(animationTime / 1600) * 3, 20);
+                this.drawCloudOnCanvas(rainbowCtx, 150 + Math.cos(animationTime / 1300) * 5, 20 + Math.cos(animationTime / 1100) * 3, 18);
+                this.drawCloudOnCanvas(rainbowCtx, 350 - Math.cos(animationTime / 1600) * 5, 30 + Math.sin(animationTime / 1400) * 3, 19);
+            },
+
+            animateRainbow() {
+                const animate = () => {
+                    const elapsed = Date.now() - this.rainbowAnimationStart;
+                    this.drawRainbow(elapsed);
+                    this.rainbowAnimationId = requestAnimationFrame(animate);
+                };
+                this.rainbowAnimationId = requestAnimationFrame(animate);
+            },
+
+            stopRainbowAnimation() {
+                if (this.rainbowAnimationId) {
+                    cancelAnimationFrame(this.rainbowAnimationId);
+                    this.rainbowAnimationId = null;
+                }
             },
 
             drawCloudOnCanvas(ctx, x, y, size) {
