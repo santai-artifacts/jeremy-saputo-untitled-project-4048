@@ -108,9 +108,11 @@
             top: 40px;
             left: 50%;
             transform: translateX(-50%);
-            width: 400px;
+            width: 500px;
             height: 180px;
             pointer-events: none;
+            background: transparent !important;
+            border: none;
         }
 
         .start-screen {
@@ -189,7 +191,7 @@
         </div>
 
         <div class="game-over-screen" id="gameOverScreen">
-            <canvas class="rainbow-arc" id="rainbowCanvas" width="400" height="180"></canvas>
+            <canvas class="rainbow-arc" id="rainbowCanvas" width="500" height="180"></canvas>
             <h1>Game Over!</h1>
             <div class="final-score" id="finalScore">Score: 0</div>
             <button onclick="game.restart()">Play Again</button>
