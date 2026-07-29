@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="english">
+<html lang="ens">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flappy Bird! :)</title>
+    <title>Flappy Bird!</title>
     <style>
         * {
             margin: 0;
@@ -78,6 +78,8 @@
             color: white;
             font-size: 48px;
             text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 25;
         }
 
         .game-over-screen .final-score {
@@ -108,9 +110,11 @@
             top: 40px;
             left: 50%;
             transform: translateX(-50%);
-            width: 400px;
+            width: 500px;
             height: 180px;
             pointer-events: none;
+            background: transparent !important;
+            border: none;
         }
 
         .start-screen {
@@ -147,20 +151,28 @@
         }
 
         .start-screen button {
-            padding: 15px 40px;
-            font-size: 20px;
+            padding: 18px 50px;
+            font-size: 22px;
+            font-weight: bold;
             background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
             color: #333;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
             pointer-events: all;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.5px;
         }
 
         .start-screen button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .start-screen button:active {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
@@ -175,14 +187,13 @@
         <div class="start-screen" id="startScreen">
             <h1>Flappy Bird</h1>
             <div class="instructions">
-                <p>Click or tap to make the bird jump</p>
-                <p>Avoid the pipes and fly as far as you can!</p>
+                <p>Click to jump. Avoid the pipes!</p>
             </div>
             <button onclick="game.start()">Start Game</button>
         </div>
 
         <div class="game-over-screen" id="gameOverScreen">
-            <canvas class="rainbow-arc" id="rainbowCanvas" width="400" height="180"></canvas>
+            <canvas class="rainbow-arc" id="rainbowCanvas" width="500" height="180"></canvas>
             <h1>Game Over!</h1>
             <div class="final-score" id="finalScore">Score: 0</div>
             <button onclick="game.restart()">Play Again</button>
@@ -212,6 +223,8 @@
             pipeWidth: 60,
             pipeSpeed: 5,
             spawnDistance: 200,
+            rainbowAnimationId: null,
+            rainbowAnimationStart: 0,
 
             init() {
                 this.bird.y = 300;
@@ -221,6 +234,7 @@
                 document.getElementById('score').textContent = `Score: ${this.score}`;
                 document.getElementById('gameOverScreen').classList.remove('show');
                 document.getElementById('startScreen').classList.remove('hide');
+                this.stopRainbowAnimation();
             },
 
             start() {
@@ -408,10 +422,11 @@
                 this.gameActive = false;
                 document.getElementById('gameOverScreen').classList.add('show');
                 document.getElementById('finalScore').textContent = `Score: ${this.score}`;
-                this.drawRainbow();
+                this.rainbowAnimationStart = Date.now();
+                this.animateRainbow();
             },
 
-            drawRainbow() {
+            drawRainbow(animationTime = 0) {
                 const rainbowCanvas = document.getElementById('rainbowCanvas');
                 const rainbowCtx = rainbowCanvas.getContext('2d');
                 rainbowCtx.clearRect(0, 0, rainbowCanvas.width, rainbowCanvas.height);
@@ -428,10 +443,35 @@
                     rainbowCtx.stroke();
                 }
 
+                // Animate clouds with gentle floating motion
+                const wave = Math.sin(animationTime / 1000) * 8;
+                const verticalBob = Math.cos(animationTime / 800) * 4;
+
                 // Left cloud
-                this.drawCloudOnCanvas(rainbowCtx, 30, 140, 30);
+                this.drawCloudOnCanvas(rainbowCtx, 30 + wave, 140 + verticalBob, 30);
                 // Right cloud
-                this.drawCloudOnCanvas(rainbowCtx, 370, 140, 30);
+                this.drawCloudOnCanvas(rainbowCtx, 470 - wave, 140 + verticalBob, 30);
+                // Additional clouds with different animation speeds
+                this.drawCloudOnCanvas(rainbowCtx, 80 + Math.sin(animationTime / 1500) * 6, 40 + Math.cos(animationTime / 1200) * 3, 22);
+                this.drawCloudOnCanvas(rainbowCtx, 420 - Math.sin(animationTime / 1400) * 6, 50 + Math.sin(animationTime / 1600) * 3, 20);
+                this.drawCloudOnCanvas(rainbowCtx, 150 + Math.cos(animationTime / 1300) * 5, 20 + Math.cos(animationTime / 1100) * 3, 18);
+                this.drawCloudOnCanvas(rainbowCtx, 350 - Math.cos(animationTime / 1600) * 5, 30 + Math.sin(animationTime / 1400) * 3, 19);
+            },
+
+            animateRainbow() {
+                const animate = () => {
+                    const elapsed = Date.now() - this.rainbowAnimationStart;
+                    this.drawRainbow(elapsed);
+                    this.rainbowAnimationId = requestAnimationFrame(animate);
+                };
+                this.rainbowAnimationId = requestAnimationFrame(animate);
+            },
+
+            stopRainbowAnimation() {
+                if (this.rainbowAnimationId) {
+                    cancelAnimationFrame(this.rainbowAnimationId);
+                    this.rainbowAnimationId = null;
+                }
             },
 
             drawCloudOnCanvas(ctx, x, y, size) {
